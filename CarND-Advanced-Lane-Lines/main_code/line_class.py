@@ -1,13 +1,20 @@
 # -*- coding: utf-8 -*-
 """
-Line Class is defined to keep track of prev lanes detected
+Line Class is defined to keep track of prev  detected lanes
+best_fit is used as an average of 5 prev fits to keep lane lines smooth between frames
 
 @author: atpandey
 """
 import cv2
 import numpy as np
-# Define a class to receive the characteristics of each line detection
+
 class Line():
+    '''
+    this class defines quite a few attributes to keep track of data on left/roght lanes
+    very few used in this implementation
+    
+    '''
+    
     def __init__(self):
         # was the line detected in the last iteration?
         self.detected = False  
@@ -37,50 +44,20 @@ class Line():
         self.num_missed = 0
 
                 
-    def update_fit(self, fit, allx, ally, n_lines=5):
-
-
-        #if there are to few points to rely on or a line wasn't detected
-        if (len(np.unique(ally)) < 280):
-            self.num_missed += 1
-            if (self.num_missed > 50):
-                self.detected = False
-
-
-        #if everything was normal and a line was detected
-        else:
-
-            self.num_missed = 0
-            self.detected = True
-            self.current_fit = np.array(fit)
-            self.allx = allx
-            self.ally = ally
-
-            self.recent_fits.append(fit)
-            self.best_fit = np.average(self.recent_fits, axis=0)
-            if(len(self.recent_fits) > n_lines):
-                self.recent_fits = self.recent_fits[-n_lines:]
-
-
-            lowestx = allx[np.argmax(ally)]
-
-            #keep n_lines amount of previus fits and use them to help compute the best fit
-            self.recent_xfitted.append(lowestx)
-            if (len(self.recent_xfitted) > n_lines):
-                self.recent_xfitted = self.recent_xfitted[-n_lines:]
-            self.bestx = np.average(self.recent_xfitted)
-#    def update_fit(self, fit, inds):
     def update_fit(self, fit):    
-        # add a found fit to the line, up to n
+        '''make detected true if fit is found
+        average current_fits and assign to best fit
+        '''
         if fit is not None:
             if self.best_fit is not None:
                 # if we have a best fit, see how this new fit compares
                 self.diffs = abs(fit-self.best_fit)
+            ##not very effective idea
             if (self.diffs[0] > 0.001 or \
                self.diffs[1] > 1.0 or \
                self.diffs[2] > 100.) and \
                len(self.current_fit) > 0:
-                # bad fit! abort! abort! ... well, unless there are no fits in the current_fit queue, then we'll take it
+                # bad fit
                 self.detected = False
             else:
                 self.detected = True

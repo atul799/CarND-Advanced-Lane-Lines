@@ -48,10 +48,11 @@ y_corners=6
 #objpoints,imgpoints=chessboard_corners(images,x_corners,y_corners,show=False)
 
 #########################
-#undistort --> warp+soebel --> lane finder is in function pipeline in file pipeline.py
+#undistort --> warp+soebel --> lane finder is in function 
+#pipeline in file pipeline.py
 
 
-
+#Apply pipeline on the videos in the project
 
 #use project video and annotate
 vid1 = '../project_video.mp4'
@@ -65,23 +66,23 @@ processed_video = video_clip.fl_image(pipeline)
 #write video stream to file
 processed_video.write_videofile(voutput1, audio=False)    
 
-##challenge video
-#vid2 = '../challenge_video.mp4'
-#voutput2='./challenge_video_annotated.mp4' 
-#if os.path.isfile(voutput2):
-#    os.remove(voutput2) 
-#video_clip = VideoFileClip(vid2)#.subclip(0,2)
-#processed_video = video_clip.fl_image(pipeline)
-#processed_video.write_videofile(voutput2, audio=False)    
-##harder challenge video
-#vid3 = '../harder_challenge_video.mp4'
-#voutput3='./harder_challenge_video_annotated.mp4' 
-#scope=500
-#if os.path.isfile(voutput3):
-#    os.remove(voutput3) 
-#video_clip = VideoFileClip(vid3)#.subclip(25,42)
-#processed_video = video_clip.fl_image(pipeline)
-#processed_video.write_videofile(voutput3, audio=False)  
+#challenge video
+vid2 = '../challenge_video.mp4'
+voutput2='./challenge_video_annotated.mp4' 
+if os.path.isfile(voutput2):
+    os.remove(voutput2) 
+video_clip = VideoFileClip(vid2)#.subclip(0,2)
+processed_video = video_clip.fl_image(pipeline)
+processed_video.write_videofile(voutput2, audio=False)    
+#harder challenge video
+vid3 = '../harder_challenge_video.mp4'
+voutput3='./harder_challenge_video_annotated.mp4' 
+scope=500
+if os.path.isfile(voutput3):
+    os.remove(voutput3) 
+video_clip = VideoFileClip(vid3)#.subclip(25,42)
+processed_video = video_clip.fl_image(pipeline)
+processed_video.write_videofile(voutput3, audio=False)  
 
 
 #%%

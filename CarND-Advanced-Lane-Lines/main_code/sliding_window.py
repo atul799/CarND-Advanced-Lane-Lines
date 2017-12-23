@@ -18,8 +18,8 @@ def sliding_window_polyfit(img,margin=100,minpix=50,nwindows=9):
     '''
     this function uses histogram to find lane lines using a sliding window approach
     then generates a polynomial fir for lanes lines
-    input is  image, margin and minpix (minimum number of pix to cosider)
-    out put is fit values,coordinates for rectangle to draw around lanes and histogram
+    inputs are:   image, margin and minpix (minimum number of pix to cosider)
+    outputa are: fit values,coordinates for rectangle to draw around lanes and histogram
     '''
     # gen a histogram with bottom half image
     histogram = np.sum(img[img.shape[0]//2:,:], axis=0)
@@ -28,17 +28,7 @@ def sliding_window_polyfit(img,margin=100,minpix=50,nwindows=9):
     midpoint = np.int(histogram.shape[0]/2)
     leftx_base = np.argmax(histogram[:midpoint])
     rightx_base = np.argmax(histogram[midpoint:]) + midpoint
-    #quarter_point = np.int(midpoint//2)
-    
-    # These will be the starting point for the left and right lines
-    # Previously the left/right base was the max of the left/right half of the histogram
-    # this changes it so that only a quarter of the histogram (directly to the left/right) is considered
-#    leftx_base = np.argmax(histogram[quarter_point:midpoint]) + quarter_point
-#    rightx_base = np.argmax(histogram[midpoint:(midpoint+quarter_point)]) + midpoint
 
-#        leftx_base = np.argmax(histogram[:midpoint])
-#        rightx_base = np.argmax(histogram[midpoint:]) + midpoint
-    #print('base pts:', leftx_base, rightx_base)
 
     # Choose the number of sliding windows
     nwindows = nwindows
@@ -108,11 +98,12 @@ def sliding_window_polyfit(img,margin=100,minpix=50,nwindows=9):
 
 def visualize_sliding_window(img,Minv,left_fit, right_fit, leftx,lefty, rightx,righty, draw,histogram,show=False):
     '''
-    this function take fit and x,y pos from finder function above and draws them on the 
+    this function takes fit and x,y pos from sliding window finder function above and draws them on the 
     warped image
     '''
-   
+    #height and width of image used for generating init points
     h,w = img.shape[:2]
+    #use fit data to generate init points x and y
     left_fit_x_int = left_fit[0]*h**2 + left_fit[1]*h + left_fit[2]
     right_fit_x_int = right_fit[0]*h**2 + right_fit[1]*h + right_fit[2]
 
@@ -146,7 +137,7 @@ def visualize_sliding_window_image(img,warp_bin,Minv,left_fit, right_fit):
     '''
     this function draws polygon between lanes on orig image
     '''
-    #ifklanes not found ret orig image
+    #if lanes not found ret orig image
     new_img = np.copy(img)
     if left_fit is None or right_fit is None:
         return img
@@ -154,15 +145,13 @@ def visualize_sliding_window_image(img,warp_bin,Minv,left_fit, right_fit):
     warp_zero = np.zeros_like(warp_bin).astype(np.uint8)
     color_warp = np.dstack((warp_zero, warp_zero, warp_zero))
     # Color in left and right line pixels
-    # Generate a polygon to illustrate the search window area
-    # And recast the x and y points into usable format for cv2.fillPoly()
     (h,w) = (img.shape[0],img.shape[1])
     # Generate x and y values for plotting
     ploty = np.linspace(0, h-1, num=h)
     left_fitx = left_fit[0]*ploty**2 + left_fit[1]*ploty + left_fit[2]
     right_fitx = right_fit[0]*ploty**2 + right_fit[1]*ploty + right_fit[2]
 
-    # Recast the x and y points into usable format for cv2.fillPoly()
+    # #generate points and format them to appy on fillpoly
     pts_left = np.array([np.transpose(np.vstack([left_fitx, ploty]))])
     pts_right = np.array([np.flipud(np.transpose(np.vstack([right_fitx, ploty])))])
     pts = np.hstack((pts_left, pts_right))
@@ -178,6 +167,8 @@ def visualize_sliding_window_image(img,warp_bin,Minv,left_fit, right_fit):
     result = cv2.addWeighted(new_img, 1, newwarp, 0.5, 0)
     return result
 
+
+#test functions
 if __name__=='__main__':
     
     calib_file='../camera_cal/calib_pickle.p'

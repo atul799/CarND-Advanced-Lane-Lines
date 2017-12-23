@@ -35,10 +35,7 @@ def calc_curv_rad_and_center_dist(img,left_fit,right_fit, leftx,lefty, rightx,ri
     left_fit_cr=[0.001,0.001,0.1]
     right_fit_cr=[0.001,0.001,0.1]
     
-#   leftx = nonzerox[l_lane_inds]
-#    lefty = nonzeroy[l_lane_inds] 
-#    rightx = nonzerox[r_lane_inds]
-#    righty = nonzeroy[r_lane_inds]
+
     if len(leftx) != 0 and len(rightx) != 0:
         # Fit new polynomials to x,y in world space
         left_fit_cr = np.polyfit(lefty*ym_per_pix, leftx*xm_per_pix, 2)
@@ -48,7 +45,7 @@ def calc_curv_rad_and_center_dist(img,left_fit,right_fit, leftx,lefty, rightx,ri
         right_curverad = ((1 + (2*right_fit_cr[0]*y_eval*ym_per_pix + right_fit_cr[1])**2)**1.5) / np.absolute(2*right_fit_cr[0])
         #curvature is in meters
     
-    # Distance from center is image x midpoint - mean of l_fit and r_fit intercepts 
+    # Distance from center is image x midpoint - mean of left_fit and right_fit  
     if left_fit_cr is not None and left_fit_cr is not None:
 #        car_position = img.shape[1]/2
         car_position = img.shape[1]/2
@@ -63,24 +60,20 @@ def calc_curv_rad_and_center_dist(img,left_fit,right_fit, leftx,lefty, rightx,ri
 def curv_draw(img, curverad, center_dist):
     new_img = np.copy(img)
     h = new_img.shape[0]
-#    font = cv2.FONT_HERSHEY_DUPLEX
-#    text = 'Curvature radius: ' + '{:04.2f}'.format(curverad) + 'm'
-#    cv2.putText(new_img, text, (40,70), font, 1.5, (200,255,155), 2, cv2.LINE_AA)
     direction = ''
     if center_dist > 0:
         direction = 'right'
     elif center_dist < 0:
-        direction = 'left'
-#    abs_center_dist = abs(center_dist)
-#    text = '{:04.3f}'.format(abs_center_dist) + 'm ' + direction + ' of center'
-#    cv2.putText(new_img, text, (40,120), font, 1.5, (200,255,155), 2, cv2.LINE_AA)
-    
+        direction = 'left'    
     cv2.putText(new_img, "Curvature: %.1f m." % curverad, (50, 70), cv2.FONT_HERSHEY_DUPLEX, 1.3, (200, 255, 255), 2)
     cv2.putText(new_img, "offset from Centre: %.3f m towards %s." %( abs(center_dist),direction), (50, 170), cv2.FONT_HERSHEY_DUPLEX, 1.3, (200, 255, 255), 2)
     
     
     return new_img
 
+
+
+###test
 if __name__=='__main__':
     
     calib_file='../camera_cal/calib_pickle.p'

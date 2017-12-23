@@ -26,29 +26,34 @@ from rad_curve import *
 from line_class import *
 
 
+#define Line class objects fro left and right lane
 left_line=Line()
 right_line = Line()
 
 
 
 def pipeline(img):
+    '''
+    this functions is the pipeline for processing image or videos to find lane lines and annotate them on original image
+    '''
+    
+    #load calibration data
     calib_file='../camera_cal/calib_pickle.p'
     dist_pickle = pickle.load( open(calib_file , "rb" ) ) 
     new_img = np.copy(img)
+    
+    #apply im_pipe from soebel.py file
+    #im_pipe has undistrtion,warp perspective,color channel and soebel thresholding steps
     img_bin, Minv = im_pipe(new_img,dist_pickle=dist_pickle,sobel=False,show=False)
     
-    # if both lanes detected in prev frame, use lanefinder_prev_fit, else use sliding_window_polyfit window
+    # if  lane lines found in prev frame, use lanefinder_prev_fit, else use sliding_window_polyfit window
     if not left_line.detected or not right_line.detected:
         left_fit, right_fit,leftx,lefty,rightx,righty, draw,histogram=sliding_window_polyfit(img_bin,margin=120,minpix=60,nwindows=9)
         
     else:
         left_fit, right_fit, leftx, lefty,rightx,righty=lanefinder_prev_fit(img_bin,left_line.best_fit, right_line.best_fit, margin=120)
         
-
-#    left_inds= [leftx,lefty]    
-#    right_inds=[rightx,righty]
-#    left_line.update_fit(left_fit, leftx,lefty)
-#    right_line.update_fit(right_fit, rightx,righty)
+    #update line classes
     left_line.update_fit(left_fit)
     right_line.update_fit(right_fit)
     
@@ -65,7 +70,7 @@ def pipeline(img):
         
     return img_out
 
-
+##test function
 #####################################
 if __name__=='__main__':
        

@@ -217,7 +217,7 @@ def im_pipe(image,dist_pickle,sobel=False,show=False):
 
 
 
-
+#test the code
 if __name__=='__main__':
     calib_file='../camera_cal/calib_pickle.p'
     dist_pickle = pickle.load( open(calib_file , "rb" ) ) 

@@ -20,6 +20,9 @@ from sliding_window import *
 def lanefinder_prev_fit(warped,left_fit, right_fit, margin=100):
     '''
     this function uses input from sliding window function to generate fits for next frames
+    warped image
+    left and right fit from prev frame and margin to consider for lane finding in pixels
+    output left/right_fit and leftx/y, rightx/y nonzeros pix coord list
     
     '''
     nonzero = warped.nonzero()
@@ -46,35 +49,25 @@ def lanefinder_prev_fit(warped,left_fit, right_fit, margin=100):
     return left_fit_new, right_fit_new, leftx, lefty,rightx,  righty
 
 
-#####
-#exampleImg2 = cv2.imread('./test_images/test5.jpg')
-#exampleImg2 = cv2.cvtColor(exampleImg2, cv2.COLOR_BGR2RGB)
-#exampleImg2_bin, Minv = pipeline(exampleImg2) 
-#left_fit_new, right_fit_new, leftx,lefty,rightx, righty = lanefinder_prev_fit(img,left_fit, right_fit, margin=margin) 
 def visualize_lanefinder_window(img,left_fit,right_fit,leftx,lefty,rightx,righty,margin=100,show=False):  
-           
+    '''
+    This functions draws poly around left/right lanes found by ablve function
+    '''
     # Generate x and y values for plotting
     ploty = np.linspace(0, img.shape[0]-1, img.shape[0] )    
     # Color in left and right line pixels
-    # Generate a polygon to illustrate the search window area
-    # And recast the x and y points into usable format for cv2.fillPoly()
+
     left_fitx = left_fit[0]*ploty**2 + left_fit[1]*ploty + left_fit[2]
     right_fitx = right_fit[0]*ploty**2 + right_fit[1]*ploty + right_fit[2]    
     # Create an image to draw on and an image to show the selection window
     out_img = np.uint8(np.dstack((img, img, img))*255)
     window_img = np.zeros_like(out_img)
     
-    # Color in left and right line pixels
-#    nonzero = img.nonzero()
-#    nonzeroy = np.array(nonzero[0])
-#    nonzerox = np.array(nonzero[1])
-#    out_img[nonzeroy[left_lane_inds2], nonzerox[left_lane_inds2]] = [255, 0, 0]
-#    out_img[nonzeroy[right_lane_inds2], nonzerox[right_lane_inds2]] = [0, 0, 255]
+
     out_img[lefty, leftx] = [255, 0, 0]
     out_img[righty, rightx] = [0, 0, 255]
     
-    # Generate a polygon to illustrate the search window area (OLD FIT)
-    # And recast the x and y points into usable format for cv2.fillPoly()
+    #generate points and format them to appy on fillpoly
     left_line_window1 = np.array([np.transpose(np.vstack([left_fitx-margin, ploty]))])
     left_line_window2 = np.array([np.flipud(np.transpose(np.vstack([left_fitx+margin, ploty])))])
     left_line_pts = np.hstack((left_line_window1, left_line_window2))
@@ -97,7 +90,7 @@ def visualize_lanefinder_window(img,left_fit,right_fit,leftx,lefty,rightx,righty
 
 
 
-#####
+##### test the functions
 if __name__=='__main__':
     
     calib_file='../camera_cal/calib_pickle.p'

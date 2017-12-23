@@ -15,6 +15,8 @@ import pickle
 import os
 from moviepy.video.io.VideoFileClip import VideoFileClip
 
+
+#import undistort and warpperspective function code
 from undist_warp import *
 
 def color_space_converter(image,space='hsv'):
@@ -135,14 +137,6 @@ def thresh_and_2color_channels(cim1,cim2,thresh1=(220, 255),thresh2=(190,255),sc
     #  Apply a threshold to the 1st channel
     cim1_scoped=cim1[scope:,:]
     cim2_scoped=cim2[scope:,:]
-#    cb_output1 = np.zeros_like(cim1_scoped)
-#    cb_output1[((cim1_scoped > thresh1[0]) & (cim1_scoped <= thresh1[1]))] = 1
-#    cb_output2 = np.zeros_like(cim2_scoped)
-#    cb_output2[((cim2_scoped > thresh2[0]) & (cim2_scoped <= thresh2[1]))] = 1          
-#               
-#               
-#    combined = np.zeros_like(cb_output1)
-#    combined[(cb_output1 == 1) | (cb_output2 == 1)] = 1
              
     cb_output1=apply_color_threshold(cim1_scoped,color_threshold=thresh1,show=False) 
     cb_output2=apply_color_threshold(cim2_scoped,color_threshold=thresh2,show=False)
@@ -186,7 +180,6 @@ def hls_l_lab_b_img(image,scope=0):
     Lab_b=img_channel_ext(Lab,channel=2,show=False)
     if np.max(Lab_b) > 175:
         Lab_b = Lab_b*(255/np.max(Lab_b))
-    #hls_l_lab_b=thresh_and_2color_channels(hls_l,Lab_b,thresh1=(220, 255),thresh2=(190,255))
     hls_l_lab_b=thresh_and_2color_channels(hls_l,Lab_b,thresh1=(200, 255),thresh2=(190,255))
     return hls_l_lab_b[scope:,:]
 
@@ -198,10 +191,12 @@ def warp_hsv_y_w(image,scope=0):
     undistorted=undistort(image,dist_pickle=dist_pickle)
 #    polyimgorig=cv2.polylines(undistorted,[pts],True,(0,0,255),2)
     warp,M,Minv=perspective_trf(undistorted,show=False)
-    #extract yellow and white from hsv space
+    #extract yellow and white from yuv space
     hsv_y_w=filter_colors_hsv(warp)
     return hsv_y_w[scope:,:]
 
+
+##test the code
 if __name__=='__main__':
 
     calib_file='../camera_cal/calib_pickle.p'

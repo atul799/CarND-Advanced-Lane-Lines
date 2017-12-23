@@ -21,12 +21,14 @@ def undistort(image,dist_pickle,show=False):
     returns:
         undist : undistotrted data
     '''
+    #load mtx and dist from dict dist_pickle
     mtx=dist_pickle['mtx'] 
     dist=dist_pickle['dist'] 
+    #apply udistort function
     undist1 = cv2.undistort(image, mtx, dist, None, mtx)
-    #aaply gaussian blur
+    #apply gaussian blur
     undist=cv2.GaussianBlur(undist1, (3, 3), 0)
-    #self.undistorted=undist
+
     if show:
         fud,axud=plt.subplots()
         axud.imshow(undist)
@@ -34,16 +36,6 @@ def undistort(image,dist_pickle,show=False):
     
     return undist
     
-#exampleImg_undistort = undistort(exampleImg)
-#
-## Visualize undistortion
-#f, (ax1, ax2) = plt.subplots(1, 2, figsize=(20,10))
-#f.subplots_adjust(hspace = .2, wspace=.05)
-#ax1.imshow(exampleImg)
-#ax1.set_title('Original Image', fontsize=30)
-#ax2.imshow(exampleImg_undistort)
-#ax2.set_title('Undistorted Image', fontsize=30)
-
 
 def perspective_trf(image,show=False):
     
@@ -58,6 +50,7 @@ def perspective_trf(image,show=False):
         Minv: inv pers matrix
     '''
 
+#try different rectangles
 #    corners = np.float32([[190,720],[589,457],[698,457],[1145,720]])
 #    #corners = np.float32([[190,720],[550,480],[710,480],[1145,720]])
 ##    corners = np.float32([[220,680],[550,480],[710,480],[1045,680]])
@@ -69,6 +62,8 @@ def perspective_trf(image,show=False):
 #    src = np.float32([corners[0],corners[1],corners[2],corners[3]])
 #    dest = np.float32([corners[0]+offset,new_top_left+offset,new_top_right-offset ,corners[3]-offset])
     
+
+#this perspective corner set works for project videos but wall gets picked up in challenge video!!
     src = np.float32([[696, 455],
                  [1096, 719],
                  [206, 719],
@@ -81,11 +76,11 @@ def perspective_trf(image,show=False):
     
     
     
-    
+    #generate M and Minv metrices
     M     = cv2.getPerspectiveTransform(src, dest)
     Minv = cv2.getPerspectiveTransform(dest, src)
+    #warp perspective
     warp=cv2.warpPerspective(image, M, image.shape[1::-1], flags=cv2.INTER_NEAREST)
-    #warp=cv2.warpPerspective(image, M, (image.shape[1], image.shape[0]), flags=cv2.INTER_LINEAR)
     
     if show:
         fp,axp=plt.subplots()
@@ -95,11 +90,15 @@ def perspective_trf(image,show=False):
 
 
 
-
+##test the code
 if __name__=='__main__':
+    
+    
+    #load calibration data
     calib_file='../camera_cal/calib_pickle.p'
     dist_pickle = pickle.load( open(calib_file , "rb" ) ) 
     
+    #images to test on
     #straight lines1
     imgname1='../test_images/straight_lines1.jpg'
     #straight lines2
@@ -174,7 +173,7 @@ if __name__=='__main__':
 #    axpli2[2].imshow(warped)
     
 #######################################
-    
+    #apply the test function on all images in images_ar
     for imagen in img_ar:
         print("image being processed is",imagen)
         image = mpimg.imread(imagen)
