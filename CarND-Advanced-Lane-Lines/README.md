@@ -110,7 +110,7 @@ The code files for these steps are:
 * Python code files are in directory main_code.**main.py** is the top python file that calls image processing pipeline with videos.[main.py](./main_code/main.py)
 * Camera calibration matrices are in file **./camera_cal/calib.pickle**
 * Directory **./output_images** has examples images from each of the steps mentioned in image processing pipeline above
-* The processed output of project video is at: **./main_code/project_video_annotated.mp4**
+* The processed output of project video is at: **./main_code/project_video_annotated.mp4** [result_video](./main_code/project_video_annotated.mp4)
 
 
 
