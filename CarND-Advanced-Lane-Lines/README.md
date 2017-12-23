@@ -45,7 +45,7 @@ Example of undistoted image:
 <img src="./camera_cal/calibration1.jpg" alt="An distorted chessboard image" width="300" height="300"> <img src="./camera_cal/calibration1_undistorted.jpg" alt="undistorted image" width="300" height="300"> 
 		<p> A distorted image  				Undistorted image <p>                
 
-#Bird's Eye view
+# Bird's Eye view
 
 A perspective transform to and from "bird's eye" perspective is done to transform the image to be viewed from top.This is important for lane detection as horizontal perspective doesn't preserve parallelness of lanes. from top perspective , Bird's eye view, the lanes appear to be parallel.
 perspective transform requires choosing four opoints on source image and corresponding four points on the destination image, it is important to have the points in same order.
@@ -60,8 +60,8 @@ Here are examples of applying warp trasform:
 The code for warp perspective is in file: :*./main_code/undist_warp.py*
 
 
-#Color channel and Sobel Gradient Thresholding
-##Color channels
+# Color channel and Sobel Gradient Thresholding
+## Color channels
 RGB color space is not very useful in situations with varying light situations including  presence of shadows.Color spaces such as HSL/HSV/Lab store images based on saturation and intensities are more immune to varying lighting conditions.
  
 Various color channel were tried during this project and finally a combination of L-channel from HSL and b-channel from Lab color space were used in this implementation as they are able to accurately extract yellow and white lane lines in varying conditions.
@@ -73,7 +73,7 @@ Here is an example image different color spaces and the channels extracted:
 
 The code file where properties of different channels and color spaces is tries can be found in file:*./main_code/color_thresh.py*
 
-##Sobel Gradient
+## Sobel Gradient
 Sobel gradient function can find gradient of pixel intensity (difference) in x or y direction. using sobel output, thresholds are applied based on absolute value/magnitude value or on direction.
 Here is result of sobel gradient and appying various thresholds on them:
 
@@ -81,18 +81,18 @@ Here is result of sobel gradient and appying various thresholds on them:
 
 Various sobel functions and thresholding methods are tried and can be found in file:*./main_code/soebel.py*
  
-#Finding Lane Lines
+# Finding Lane Lines
 Finding lane lines involves three steps and is based on warped and binary thresholded images generated in previous step:
 
-1.At the start create a histogram (sum) of pixel in each column. The peaks in histogram would be where pixels are hot i.e. where lanes are. The image is divided into two parts for left and right lanes. A sliding window approach is used, wherein, the image is divided into  equidistant boxes along height, and starting at bottom lanes (dense pixel zones) are found and numpy polyfit function is used to find a polynomial fit for lane lines.
+1. At the start create a histogram (sum) of pixel in each column. The peaks in histogram would be where pixels are hot i.e. where lanes are. The image is divided into two parts for left and right lanes. A sliding window approach is used, wherein, the image is divided into  equidistant boxes along height, and starting at bottom lanes (dense pixel zones) are found and numpy polyfit function is used to find a polynomial fit for lane lines.
 
 <img src="./output_images/sliding_window_and_lanefinder_ar.png" alt="sliding window" width="800" height="800">
 
-2.If the lanes are found in previous frame, sliding window can be avoided and assuming lane in next frame starts where it end in the previous frame the lane lines can be extrapolated. The frames are checked for lane detection and if lane is not detected in a frame, sliding window function is invoked.
+2. If the lanes are found in previous frame, sliding window can be avoided and assuming lane in next frame starts where it end in the previous frame the lane lines can be extrapolated. The frames are checked for lane detection and if lane is not detected in a frame, sliding window function is invoked.
 
 <img src="./output_images/nonsliding_lane_finder.png" alt="nonsliding window" width="800" height="800">
 
-3.Based on polynomial fits found in a frame, the lane area is marked and left and right lane curvature is found and annotated to the image
+3. Based on polynomial fits found in a frame, the lane area is marked and left and right lane curvature is found and annotated to the image
 
 <img src="./output_images/warp_sliding_lane_colored.png" alt="annotated window" width="800" height="800">
 
@@ -105,18 +105,18 @@ The code files for these steps are:
 5. processing pipeline : *./main_code/pipeline.py*
 6. file that uses processing pipeline and applies it on project video: *./main_video/rad_curve.py*
 
-#Submission
+# Submission
 * Python code files are in directory main_code.**main.py** is the top python file that calls image processing pipeline with videos.
-
 * Camera calibration matrices are in file **./camera_cal/calib.pickle**
 * Directory **./output_images** has examples images from each of the steps mentioned in image processing pipeline above
+* The processed output of project video is at: **./main_code/project_video_annotated.mp4**
 
 
 
-<img src="./output_images/proj_vid_ann.gif" alt="project video" width="300" height="300">
+<img src="./main_code/proj_vid_ann.gif" alt="project video" width="400" height="400">
 
 
-#Improvements and future enhancements
+# Improvements and future enhancements
 I haven't been able to find a systematic method to find  corners for perspective transform. Understanding color spaces and the characteristics of the channels proved to be essential in finding image binaries. Further  application of equalization/noise reduction and adaptive thresholding can be beneficial. So, generating a robust colr/gradient method to find binary image with hotpixels for lanes is most important aspect in this project.
 Further enhancements in selecting a region of interest for routes with sharp and frequent turns,advanced method for smoothening polyfits and evaluating when a fit doesn't make sense and rejecting it will be helpful to generalize the project
 
