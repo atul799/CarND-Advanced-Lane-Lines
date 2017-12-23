@@ -98,15 +98,16 @@ Finding lane lines involves three steps and is based on warped and binary thresh
 
 
 The code files for these steps are:
+
 1. Sliding window approach for lane finder, along with function to draw polygons between lanes: *./main_code/sliding_window.py*
 2. Nonsliding window for lane finder      : *./main_code/lane_finder_prev_fit.py*
 3. Calculate radii and offset of vehicle from lane centre: *./main_code/rad_curve.py*
 4. Line class to keep track of fits between frames: *./main_code/line_class.py*
-5. processing pipeline : *./main_code/pipeline.py*
-6. file that uses processing pipeline and applies it on project video: *./main_video/rad_curve.py*
+5. processing pipeline : *./main_code/pipeline.py* [pipeline.py](./main_code/pipeline.py)
+6. file that uses processing pipeline and applies it on project video: *./main_video/rad_curve.py* 
 
 # Submission
-* Python code files are in directory main_code.**main.py** is the top python file that calls image processing pipeline with videos.
+* Python code files are in directory main_code.**main.py** is the top python file that calls image processing pipeline with videos.[main.py](./main_code/main.py)
 * Camera calibration matrices are in file **./camera_cal/calib.pickle**
 * Directory **./output_images** has examples images from each of the steps mentioned in image processing pipeline above
 * The processed output of project video is at: **./main_code/project_video_annotated.mp4**
